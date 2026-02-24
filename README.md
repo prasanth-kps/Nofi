@@ -170,10 +170,7 @@ NoFi v1.0 transmits in **plaintext**. It is intended for educational use, demos,
 
 ## Built by
 
-| | |
-|---|---|
-| [Prasanth KPS](https://github.com/prasanth-kps) | [@prasanth-kps](https://github.com/prasanth-kps) |
-| [Karthik Red](https://github.com/KarthikRed2000) | [@KarthikRed2000](https://github.com/KarthikRed2000) |
+[Prasanth KPS](https://github.com/prasanth-kps) · [@prasanth-kps](https://github.com/prasanth-kps)
 
 ---
 
