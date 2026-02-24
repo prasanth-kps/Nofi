@@ -1,518 +1,190 @@
-# 🎯 NoFi - Offline Audio Mesh Network
+<div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://reactjs.org/)
+<img src="no-fi/public/logo.png" alt="NoFi Logo" width="120" />
 
-> **Communicate without internet using only sound waves.** NoFi is a peer-to-peer audio modem that transmits data through acoustic frequencies, creating a decentralized mesh network that requires no WiFi, cellular, or internet connection.
+# NoFi
 
-![NoFi Demo](https://via.placeholder.com/800x400/0a0a1a/06b6d4?text=NoFi+Audio+Modem)
+### Communicate when nothing connects.
 
-## ✨ Features
+*A peer-to-peer audio modem that transmits data through sound waves —*
+*no WiFi, no cellular, no internet required.*
 
-### 🔊 Core Functionality
-- **Audio Data Transmission**: Encode and transmit text messages as audio frequencies (FSK modulation)
-- **Dual-Mode Support**: 
-  - 🔈 **Audible Mode** (1.2-3kHz): Human-audible tones for debugging and demos
-  - 🔇 **Stealth Mode** (16-20kHz): Near-ultrasonic frequencies for covert communication
-- **Automatic Mesh Relay**: Messages auto-relay after 10-20s random delay to extend range
-- **Collision Detection**: Prevents transmission conflicts with smart timing
-- **Duplicate Filtering**: Message ID system prevents echo loops
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-no--fi.vercel.app-06b6d4?style=for-the-badge&logo=vercel&logoColor=white)](https://no-fi.vercel.app)
 
-### 🤖 AI-Powered Features
-- **Offline Voice-to-Text**: Built-in Whisper AI model (runs 100% locally)
-- **No Internet Required**: Model downloads once, then works offline forever
-- **40MB Footprint**: Optimized `whisper-tiny.en` model
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](https://opensource.org/licenses/MIT)
 
-### 📍 Emergency Features
-- **GPS Location Sharing**: One-click coordinate transmission
-- **Offline Operation**: Perfect for disaster relief or remote areas
-- **Mesh Networking**: Extends range through automatic peer relay
-
-### 🎨 Modern UI/UX
-- **Glassmorphism Design**: Beautiful frosted-glass aesthetic
-- **Real-time Visualizer**: Live audio spectrum analyzer
-- **Signal Strength Meter**: Monitor transmission quality
-- **Relay Queue Manager**: Track and control message forwarding
-- **Responsive Design**: Works on desktop, tablet, and mobile
+</div>
 
 ---
 
-## 🚀 Quick Start
+## What is NoFi?
 
-### Prerequisites
-- Modern web browser (Chrome/Edge/Safari/Firefox)
-- **HTTPS connection** (required for microphone access)
-  - Use `localhost` for development
-  - Deploy with SSL certificate for production
+NoFi is an **offline audio mesh network** built entirely in the browser. It encodes text into audio tones using **Frequency Shift Keying (FSK)** and transmits them through your device's speakers — other devices pick them up via their microphone, decode the signal, and optionally relay it further. No server. No internet. Just sound.
 
-### Installation
-
-#### Option 1: Run Locally
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/nofi.git
-cd nofi
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-Then open `https://localhost:5173` (or your dev server URL)
-
-#### Option 2: Deploy to Production
-```bash
-# Build for production
-npm run build
-
-# Deploy to your hosting service
-# (Vercel, Netlify, GitHub Pages, etc.)
-```
-
-**⚠️ Critical:** Ensure your production deployment uses HTTPS!
+Originally built as a proof-of-concept for disaster-resilient communication, it also features offline voice-to-text powered by a locally-run Whisper AI model, GPS coordinate broadcasting, and a stealth near-ultrasonic mode.
 
 ---
 
-## 📖 How It Works
+## Features
 
-### Audio Protocol
+**Audio Transmission**
+- FSK encoding across human-audible (1.2–3 kHz) and near-ultrasonic (16–20 kHz) bands
+- Real-time FFT-based decoding with a state-machine receiver
+- Collision detection and smart timing to avoid transmission conflicts
 
-NoFi uses **Frequency Shift Keying (FSK)** to encode data:
+**Mesh Networking**
+- Devices auto-relay received messages after a random 10–20s delay
+- Duplicate message filtering via ID system prevents relay loops
+- Organically extends range across multiple devices
+
+**Offline AI**
+- Voice-to-text via `whisper-tiny.en` running 100% locally via Transformers.js
+- ~40MB one-time download, works fully offline after that
+
+**Emergency Tools**
+- One-click GPS coordinate broadcast
+- No infrastructure dependency — works when everything else is down
+
+**UI**
+- Glassmorphism design with live audio spectrum visualizer
+- Signal strength meter and relay queue manager
+- Fully responsive across desktop, tablet, and mobile
+
+---
+
+## Protocol
+
+NoFi uses **FSK modulation** — each character maps to a distinct frequency:
 
 ```
 Message: "Hi"
     ↓
 [Marker][H][Marker][i]
     ↓
-1200Hz → 3620Hz → 1200Hz → 4220Hz
+1200 Hz → 3620 Hz → 1200 Hz → 4220 Hz
     ↓
-Audio Tones → Transmitted via speakers
-    ↓
-Received via microphone → FFT Analysis → Decoded
+Transmitted via speakers → Received via microphone → FFT → Decoded
 ```
-
-#### Protocol Specification
 
 | Parameter | Audible Mode | Stealth Mode |
-|-----------|-------------|--------------|
-| **Marker Frequency** | 1.2 kHz | 16 kHz |
-| **Base Frequency** | 1.5 kHz | 16.5 kHz |
-| **Step Size** | 60 Hz/char | 40 Hz/char |
-| **Tone Duration** | 120 ms | 120 ms |
-| **Gap Duration** | 40 ms | 40 ms |
-| **Bandwidth** | ~7 kHz | ~4 kHz |
+|---|---|---|
+| Marker Frequency | 1.2 kHz | 16 kHz |
+| Base Frequency | 1.5 kHz | 16.5 kHz |
+| Step Size | 60 Hz/char | 40 Hz/char |
+| Tone Duration | 120 ms | 120 ms |
+| Gap Duration | 40 ms | 40 ms |
+| Bandwidth | ~7 kHz | ~4 kHz |
 
-#### Message Format
-```
-[MessageID]|[MessageText]
-```
-Example: `A1B2C3D4|Hello World`
-
-### Mesh Network Architecture
-
-```
-Device A ──┐
-           │
-Device B ──┼──→ Message ──→ Auto-relay (10-20s) ──→ Device D
-           │
-Device C ──┘
-```
-
-Each device:
-1. **Receives** messages via microphone
-2. **Checks** for duplicate IDs (prevents loops)
-3. **Queues** new messages for relay
-4. **Rebroadcasts** after random delay (10-20s)
-5. **Extends** network range organically
+Message format: `[MessageID]|[MessageText]`  — e.g., `A1B2C3D4|Hello World`
 
 ---
 
-## 🎮 Usage Guide
-
-### Basic Communication
-
-1. **Grant Microphone Permission**
-   - Click "Activate Modem" on first launch
-   - Allow browser microphone access
-
-2. **Send a Message**
-   - Type text in input field
-   - Press Enter or click Send button
-   - Message transmits as audio tones
-
-3. **Receive Messages**
-   - Keep microphone active
-   - Messages decode automatically
-   - Green popup shows incoming text
-
-### Voice Input (Offline AI)
-
-1. **Wait for AI Model to Load** (~40MB download on first use)
-2. **Click Microphone Button** (left of input)
-3. **Speak your message**
-4. **Click again to stop** - Text appears in input
-5. **Send as normal**
-
-### Location Sharing
-
-1. **Click GPS Pin Icon**
-2. **Grant location permission**
-3. **Coordinates auto-fill** input field
-4. **Send to broadcast** your location
-
-### Stealth Mode
-
-Toggle between **Audible** (🔈) and **Stealth** (🔇) modes:
-- **Audible Mode**: 1.2-3kHz (clearly audible tones)
-- **Stealth Mode**: 16-20kHz (near-ultrasonic, less noticeable)
-
-**Note**: Stealth mode may have reduced range on some devices due to speaker/microphone frequency response limitations.
-
-### Relay Queue Management
-
-- **View Queue**: Click Inbox icon in header
-- **Manual Relay**: Click "Relay Now" on any message
-- **Clear Queue**: Remove all pending relays
-
----
-
-## ⚙️ Configuration
-
-### Protocol Tuning
-
-Edit `PROTOCOL` constants in the code:
-
-```typescript
-const PROTOCOL = {
-  TONE_DURATION: 0.12,      // Longer = more reliable, slower
-  GAP_DURATION: 0.04,       // Gap between tones
-  THRESHOLD: 30,            // Sensitivity (10-50 range)
-  SILENCE_TIMEOUT: 1500,    // Message completion delay
-  STEP_FREQ: 60,            // Hz between characters
-  // ...
-};
-```
-
-**Trade-offs:**
-- ↑ Tone Duration = ↑ Reliability, ↓ Speed
-- ↑ Threshold = ↓ Sensitivity, ↓ False positives
-- ↑ Step Frequency = ↑ Bandwidth, ↓ Range
-
-### Performance Tips
-
-#### For Maximum Range
-- Use **Audible Mode** (lower frequencies travel farther)
-- Increase **Tone Duration** to 150ms
-- Decrease **Threshold** to 20
-- Use external speakers/microphones
-
-#### For Maximum Speed
-- Use **Stealth Mode** (tighter frequency packing)
-- Decrease **Tone Duration** to 80ms
-- Increase **Step Frequency** to 80Hz
-- Optimize FFT_SIZE to 1024
-
-#### For Noisy Environments
-- Increase **Threshold** to 40-50
-- Increase **Consecutive Frames** requirement
-- Use directional microphones
-- Add acoustic foam/barriers
-
----
-
-## 🏗️ Architecture
-
-### Technology Stack
-
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | React 18 + TypeScript |
-| **Styling** | Tailwind CSS (CDN) |
-| **Icons** | Lucide React |
-| **Audio Processing** | Web Audio API |
-| **AI Model** | Transformers.js (Whisper) |
-| **Build Tool** | Vite |
-
-### Key Components
+## Architecture
 
 ```
 NoFiChat (Root Component)
 │
 ├── Audio Engine
-│   ├── Transmitter (FSK Encoder)
-│   ├── Receiver (FFT Analyzer)
-│   └── Decoder (State Machine)
+│   ├── Transmitter      FSK encoder → Web Audio API oscillators
+│   ├── Receiver         AnalyserNode → FFT → frequency detection
+│   └── Decoder          State machine: IDLE → WAIT_MARKER → READ_CHAR
 │
 ├── Mesh Network
-│   ├── Message Queue
-│   ├── Relay Logic
-│   └── Duplicate Filter
+│   ├── Message Queue    Pending relay buffer
+│   ├── Relay Logic      Random delay broadcast
+│   └── Duplicate Filter ID-based deduplication
 │
-├── AI Features
-│   ├── Whisper Model Loader
-│   ├── Audio Recorder
-│   └── Transcription Engine
+├── AI Pipeline
+│   ├── Model Loader     Transformers.js whisper-tiny.en
+│   ├── Audio Recorder   MediaRecorder API
+│   └── Transcription    Local inference, no server
 │
-└── UI Components
+└── UI
     ├── Onboarding Modal
     ├── Chat Interface
     ├── Relay Queue Panel
     └── Status Indicators
 ```
 
-### State Management
-
-Uses React hooks for local state:
-- `useState` for UI state
-- `useRef` for audio processing (avoids re-renders)
-- `useEffect` for lifecycle management
+**Stack:** React 18 · TypeScript · Vite · Tailwind CSS · Web Audio API · Transformers.js
 
 ---
 
-## 🔬 Technical Deep Dive
+## Getting Started
 
-### FFT Analysis
+> Requires HTTPS (or `localhost`) for microphone access.
 
-NoFi uses real-time FFT to detect frequencies:
-
-```typescript
-analyserRef.current.getByteFrequencyData(dataArray);
-
-// Find dominant frequency
-const nyquist = sampleRate / 2;
-const dominantFreq = (maxIndex / bufferLength) * nyquist;
-
-// Match to protocol
-if (Math.abs(dominantFreq - MARKER_FREQ) < TOLERANCE) {
-  // Detected marker tone
-}
-```
-
-### Decoder State Machine
-
-```
-IDLE ──[Detect Marker]──> WAIT_MARKER ──[Detect Data]──> READ_CHAR
-  ↑                                                          │
-  └────────────[Silence Timeout / Message Complete]─────────┘
-```
-
-### Collision Avoidance
-
-```typescript
-// Don't transmit while receiving
-if (isSending || isReceiving) return;
-
-// Random relay delay spreads traffic
-const randomDelay = 10000 + Math.random() * 10000;
-```
-
----
-
-## 🐛 Troubleshooting
-
-### "Microphone Permission Denied"
-**Solution**: App requires HTTPS. Use `localhost` for dev or deploy with SSL.
-
-### "No Signal Detected"
-**Checklist**:
-- ✅ Microphone permission granted
-- ✅ Volume turned up on transmitting device
-- ✅ Devices within ~10 feet (audible) or ~5 feet (stealth)
-- ✅ Minimal background noise
-- ✅ Threshold not set too high
-
-### "AI Model Failed to Load"
-**Causes**:
-- First-time internet connection required (~40MB download)
-- Browser cache may be disabled
-- CDN (jsdelivr.net) may be blocked
-
-**Solution**: Ensure internet connection on first launch. Model caches for offline use.
-
-### "Messages Decode Incorrectly"
-**Potential Issues**:
-- Room echoes/reverb (add acoustic treatment)
-- Speaker distortion (lower volume)
-- Microphone clipping (move farther away)
-- Frequency response limitations (try different mode)
-
-**Fix**: Increase `TONE_DURATION` and `consecutiveFrames` threshold.
-
-### "Stealth Mode Not Working"
-**Reason**: Many device speakers/mics don't reproduce 16kHz+ well.
-
-**Solution**: 
-- Test your hardware with a frequency generator app
-- Use external audio equipment
-- Stick to Audible Mode for consumer devices
-
----
-
-## 🔐 Security Considerations
-
-### Current Limitations
-
-⚠️ **NoFi v1.0 is NOT secure for sensitive communications:**
-
-- **No Encryption**: Messages transmitted in plaintext
-- **No Authentication**: Anyone can spoof sender IDs
-- **Broadcast Nature**: All nearby devices receive all messages
-- **Replay Attacks**: Messages can be recorded and retransmitted
-
-### Future Roadmap
-
-- [ ] End-to-end encryption (ECDH key exchange)
-- [ ] Digital signatures (message authentication)
-- [ ] Channel hopping (frequency diversity)
-- [ ] Error correction codes (Reed-Solomon)
-- [ ] Directional transmission (beamforming)
-
-### Recommended Use Cases
-
-✅ **Good For:**
-- Emergency/disaster communication
-- Offline demos and education
-- Mesh networking experiments
-- Short-range coordination
-- Areas without infrastructure
-
-❌ **Not Suitable For:**
-- Private/confidential data
-- Financial transactions
-- Medical information
-- Legal communications
-- Military/government use
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how to help:
-
-### Reporting Bugs
-1. Check existing issues first
-2. Provide clear reproduction steps
-3. Include browser/OS details
-4. Share relevant console logs
-
-### Suggesting Features
-- Open an issue with `[Feature Request]` prefix
-- Explain the use case
-- Consider implementation complexity
-
-### Submitting Code
 ```bash
-# Fork the repo
-# Create a feature branch
-git checkout -b feature/amazing-feature
-
-# Make your changes
-# Test thoroughly
-
-# Commit with clear messages
-git commit -m "Add amazing feature"
-
-# Push and open a Pull Request
-git push origin feature/amazing-feature
-```
-
-### Development Setup
-```bash
+git clone https://github.com/prasanth-kps/Nofi.git
+cd Nofi/no-fi
 npm install
-npm run dev      # Start dev server
-npm run build    # Production build
-npm run lint     # Check code style
+npm run dev
 ```
 
----
+Open `http://localhost:5173`, click **Activate Modem**, and allow microphone access.
 
-## 📜 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-**TL;DR**: Free to use, modify, and distribute. No warranty provided.
+To test transmission between two devices, open the app on both, type a message on one, and watch it decode on the other within range (~3–10 meters indoors).
 
 ---
 
-## 🙏 Acknowledgments
-
-- **Web Audio API** - Browser audio processing
-- **Transformers.js** - Client-side AI inference
-- **Whisper** - OpenAI's speech recognition model
-- **Lucide** - Beautiful icon library
-- **Tailwind CSS** - Utility-first styling
-
----
-
-## 📊 Performance Benchmarks
+## Performance
 
 | Metric | Value |
-|--------|-------|
-| **Transmission Speed** | ~6 characters/second |
-| **Effective Bitrate** | ~48 bps (audible), ~32 bps (stealth) |
-| **Range** | 3-10 meters (indoor) |
-| **Latency** | ~200ms encoding + ~150ms decoding |
-| **Reliability** | 95%+ in quiet environments |
-| **AI Model Size** | 40 MB (one-time download) |
-| **Bundle Size** | ~150 KB (excluding AI model) |
+|---|---|
+| Transmission Speed | ~6 characters/second |
+| Effective Bitrate | ~48 bps (audible) / ~32 bps (stealth) |
+| Indoor Range | 3–10 meters |
+| Encoding Latency | ~200 ms |
+| Decoding Latency | ~150 ms |
+| Reliability | 95%+ in quiet environments |
+| AI Model Size | 40 MB (one-time download) |
+| App Bundle Size | ~150 KB (excluding AI model) |
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
-### Version 1.1 (Next Release)
-- [ ] Error correction (CRC/checksum)
+**v1.1**
+- [ ] CRC/checksum error correction
 - [ ] Adaptive frequency selection
 - [ ] Multi-channel transmission
 - [ ] File transfer support
 - [ ] PWA offline support
 
-### Version 2.0 (Future)
-- [ ] Encryption layer
+**v2.0**
+- [ ] End-to-end encryption (ECDH)
+- [ ] Digital signatures
 - [ ] Compressed transmission
-- [ ] Video streaming (low-res)
-- [ ] Group channels
 - [ ] Network topology visualization
 
 ---
 
-## 💬 Community
+## Security Notice
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/nofi/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/nofi/discussions)
-- **Twitter**: [@nofi_mesh](https://twitter.com/nofi_mesh)
+NoFi v1.0 transmits in **plaintext**. It is intended for educational use, demos, and experimental mesh networking. Do not use it for sensitive, private, or safety-critical communications.
 
 ---
 
-## 📞 Contact
+## Built by
 
-**Project Maintainer**: Your Name
-- Email: your.email@example.com
-- GitHub: [@yourusername](https://github.com/yourusername)
+| | |
+|---|---|
+| [Prasanth KPS](https://github.com/prasanth-kps) | [@prasanth-kps](https://github.com/prasanth-kps) |
+| [Karthik Red](https://github.com/KarthikRed2000) | [@KarthikRed2000](https://github.com/KarthikRed2000) |
 
 ---
 
-## ⚖️ Disclaimer
+## License
 
-This software is provided for **educational and experimental purposes**. 
-
-- May not work in all environments
-- Audio transmission may be disruptive
-- Check local regulations regarding frequency use
-- Not suitable for emergency-critical communications
-- No guarantee of privacy or security
-
-**Use responsibly and at your own risk.**
+[MIT](LICENSE) — free to use, modify, and distribute.
 
 ---
 
 <div align="center">
 
-**Built with ❤️ for offline communication**
-
-[⭐ Star this repo](https://github.com/yourusername/nofi) • [🐛 Report Bug](https://github.com/yourusername/nofi/issues) • [✨ Request Feature](https://github.com/yourusername/nofi/issues)
+[Live Demo](https://no-fi.vercel.app) · [Report a Bug](https://github.com/prasanth-kps/Nofi/issues) · [Request a Feature](https://github.com/prasanth-kps/Nofi/issues)
 
 </div>
